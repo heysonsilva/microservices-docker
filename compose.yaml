@@ -1,0 +1,49 @@
+services:
+  # Dns:
+  #   image: bind9:latest
+  #   ports:
+  #     - "53:53/udp"
+  #     - "53:53/tcp"
+  #   volumes:
+  #     - ./dns/bind9.conf:/etc/bind/named.conf
+  #     - ./dns/zones:/var/cache/bind
+  #   networks:
+  #     docker-network:
+  #       ipv4_address: 192.168.1.4
+
+  reverse-proxy:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      docker-network:
+        ipv4_address: 192.168.1.5
+  
+  atlas-webserver:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+    volumes:
+      - ./atlas-webserver/index.html:/usr/share/nginx/html/index.html
+    networks:
+      docker-network:
+        ipv4_address: 192.168.1.6
+  
+  poseidon-webserver:
+    image: nginx:latest
+    ports:
+      - "8082:80"
+    volumes:
+      - ./poseidon-webserver/index.html:/usr/share/nginx/html/index.html
+    networks:
+      docker-network:
+        ipv4_address: 192.168.1.7
+
+networks:
+  docker-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
